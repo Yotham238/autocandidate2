@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!-- saved from url=(0152)https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/264b9ebdb61c84c9404255b07891e282/5ead8783-511a-47d9-8053-79cba6511b4e/index.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoCandidate - Automatisez vos candidatures</title>
+    <link rel="stylesheet" href="./index.html _files/style.css">
+</head>
+<body>
+    <!-- Section 1: Landing Page -->
+    <section id="landing" class="section active">
+        <div class="container">
+            <div class="landing-content">
+                <div class="logo">🚀</div>
+                <h1 class="landing-title">AutoCandidate</h1>
+                <h2 class="landing-hero-title">Trouve ton stage en 2 minutes</h2>
+                <p class="landing-hero-subtitle">Messages personnalisés. Honnêtes. Efficaces.</p>
+                <div class="landing-benefits">
+                    <div class="benefit">✓ Généré en live</div>
+                    <div class="benefit">✓ Vous voyez tout</div>
+                    <div class="benefit">✓ Gratuit</div>
+                </div>
+                <button class="btn btn--primary btn--lg btn--cta" onclick="goToForm()">Commencer maintenant</button>
+                <p class="landing-target">Pour lycéens professionnels en Maintenance, Électrique, Informatique</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Progress Indicator -->
+    <div id="progress-indicator" class="progress-indicator">
+        <div class="progress-step" data-step="1">
+            <div class="progress-circle">1</div>
+            <div class="progress-label">Informations</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2">
+            <div class="progress-circle">2</div>
+            <div class="progress-label">CV</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3">
+            <div class="progress-circle">3</div>
+            <div class="progress-label">Recherche</div>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="4">
+            <div class="progress-circle">4</div>
+            <div class="progress-label">Demandes</div>
+        </div>
+    </div>
+
+    <!-- Section 2: Form -->
+    <section id="form-section" class="section">
+        <div class="container">
+            <div class="form-wrapper">
+                <button class="btn-back" onclick="goToLanding()">← Retour</button>
+                <h2 class="form-title">Vos informations</h2>
+                <p class="form-description">Remplissez ces champs pour générer tes demandes de stage</p>
+                
+                <form id="candidate-form" onsubmit="handleSubmit(event)">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email *</label>
+                        <input type="email" id="email" class="form-control" placeholder="votre.email@exemple.fr" required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prenom" class="form-label">Prénom *</label>
+                        <input type="text" id="prenom" class="form-control" placeholder="Votre prénom" required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ville" class="form-label">Ville *</label>
+                        <input type="text" id="ville" class="form-control" placeholder="Ex: Paris, Lyon, Toulouse..." required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telephone" class="form-label">Téléphone *</label>
+                        <input type="tel" id="telephone" class="form-control" placeholder="06 12 34 56 78" required="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filiere" class="form-label">Filière *</label>
+                        <select id="filiere" class="form-control" required="">
+                            <option value="">Sélectionnez votre filière</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Électrique">Électrique</option>
+                            <option value="Informatique">Informatique</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cv-upload" class="form-label">CV (PDF ou DOCX) *</label>
+                        <div class="cv-upload-area" id="cv-upload-area">
+                            <input type="file" id="cv-upload" accept=".pdf,.docx" style="display: none;" onchange="handleFileSelect(event)">
+                            <div class="cv-upload-content" onclick="document.getElementById(&#39;cv-upload&#39;).click()">
+                                <div class="cv-upload-icon">📄</div>
+                                <div class="cv-upload-text">Cliquez pour uploader votre CV</div>
+                                <div class="cv-upload-hint">ou glissez-déposez votre fichier ici</div>
+                            </div>
+                            <div id="cv-uploaded-info" class="cv-uploaded-info" style="display: none;">
+                                <div class="cv-uploaded-icon">✓</div>
+                                <div class="cv-uploaded-details">
+                                    <div class="cv-uploaded-name" id="cv-uploaded-name"></div>
+                                    <div class="cv-uploaded-size" id="cv-uploaded-size"></div>
+                                </div>
+                                <button type="button" class="cv-remove-btn" onclick="removeFile(event)">✕</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="error-message" class="error-message" style="display: none;"></div>
+
+                    <button type="submit" class="btn btn--primary btn--lg btn--full-width">Générer mes demandes de stage</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: CV Analysis -->
+    <section id="cv-analysis" class="section">
+        <div class="container">
+            <div class="analysis-wrapper">
+                <div class="analysis-success">
+                    <div class="success-icon">✅</div>
+                    <h2 class="analysis-title">CV analysé avec succès</h2>
+                    <p class="analysis-subtitle">Voici les compétences que tu as apprises au lycée</p>
+                </div>
+
+                <div class="skills-card">
+                    <h3 class="skills-title">Compétences détectées</h3>
+                    <div class="skills-list" id="skills-list"></div>
+                </div>
+
+                <button class="btn btn--primary btn--lg btn--full-width" onclick="startScraping()">Générer mes demandes de stage</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Scraping -->
+    <section id="scraping-section" class="section">
+        <div class="container">
+            <div class="scraping-wrapper">
+                <div class="scraping-progress">
+                    <div class="scraping-icon">🔍</div>
+                    <h2 class="scraping-title" id="scraping-title">Recherche en cours...</h2>
+                    <p class="scraping-subtitle" id="scraping-subtitle">Analyse des entreprises dans votre région</p>
+                    
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <p class="progress-text" id="progress-text">0%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Results -->
+    <section id="results" class="section">
+        <div class="container-large">
+            <div class="results-header">
+                <div id="success-message" class="success-banner"></div>
+                <p class="results-subtitle">Tes demandes de stage personnalisées sont prêtes à être envoyées</p>
+            </div>
+
+            <div class="results-actions">
+                <button class="btn btn--secondary" onclick="newApplication()">Nouvelle recherche</button>
+                <button class="btn btn--primary" onclick="sendAllApplications()">Envoyer toutes les demandes</button>
+                <button class="btn btn--primary" onclick="downloadTracking()">Télécharger le suivi (Google Sheet)</button>
+            </div>
+
+            <div class="table-container">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Entreprise</th>
+                            <th>Localisation</th>
+                            <th>Email</th>
+                            <th>Secteur</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-tbody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="google-sheet-preview" class="google-sheet-preview" style="display: none;">
+                <h3 class="sheet-preview-title">📊 Suis tes demandes de stage en temps réel</h3>
+                <p class="sheet-preview-subtitle">Accède à ton Google Sheet de suivi : <a href="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/264b9ebdb61c84c9404255b07891e282/5ead8783-511a-47d9-8053-79cba6511b4e/index.html#" target="_blank">Voir le Google Sheet</a></p>
+                <div class="sheet-preview-table">
+                    <table class="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Date d'envoi</th>
+                                <th>Entreprise</th>
+                                <th>Email</th>
+                                <th>Secteur</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sheet-preview-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Génération en cours...</p>
+        <p class="loading-subtext" id="loading-progress">Recherche d'entreprises...</p>
+    </div>
+
+    <!-- Modal for Full Message -->
+    <div id="message-modal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-company-name"></h3>
+                <button class="modal-close" onclick="closeModal(event)">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="modal-info-item">
+                        <strong>À:</strong> <span id="modal-email"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <strong>Objet:</strong> <span id="modal-subject"></span>
+                    </div>
+                </div>
+                <div class="modal-message">
+                    <p id="modal-full-message"></p>
+                </div>
+                <div class="modal-cv-info">
+                    <strong>CV joint :</strong> <span id="modal-cv-name"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--secondary" onclick="closeModal(event)">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./index.html _files/app.js"></script>
+
+</body></html>
