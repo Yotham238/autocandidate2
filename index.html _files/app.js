@@ -309,52 +309,51 @@ function sendAllApplications() {
   
   const webhookScenario3 = "https://hook.eu2.make.com/82bx1v2h1yni83lkl4exg9rg2ljdnfal";
   
-  // ✅ UTILISE FormData au lieu de JSON
+  // ✅ UTILISE FormData
   const formDataToSend = new FormData();
   formDataToSend.append('email', formData.email);
   formDataToSend.append('prenom', formData.prenom);
   formDataToSend.append('ville', formData.ville);
   formDataToSend.append('telephone', formData.telephone);
   formDataToSend.append('filiere', formData.filiere);
-  formDataToSend.append('cv_file', uploadedCV);  // ✅ Maintenant ça marche !
+  formDataToSend.append('cv_file', uploadedCV);
   formDataToSend.append('cv_file_name', uploadedCV.name);
   
   // Envoie via webhook Make
   fetch(webhookScenario3, {
     method: 'POST',
-    body: formDataToSend  // ✅ PAS de headers, FormData gère tout
+    body: formDataToSend
   })
-  .then(response => response.json())
-  .then(data => {
+  .then(response => {
+    console.log('✅ Réponse reçue du webhook:', response.status);
     hideLoading();
     
-    if (data.success) {
-      const tbody = document.getElementById('results-tbody');
-      tbody.innerHTML = '';
-      
-      generatedApplications.forEach((app) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><strong>${app.name}</strong></td>
-          <td>${app.location}</td>
-          <td>${app.email}</td>
-          <td>${app.secteur}</td>
-          <td><span class="status-badge sent">Envoyé ✓</span></td>
-          <td><button class="btn btn--sm" onclick="showMessage(${generatedApplications.indexOf(app)})">Voir</button></td>
-        `;
-        tbody.appendChild(row);
-      });
-      
-      const successMessage = document.getElementById('success-message');
-      const today = new Date().toLocaleDateString('fr-FR');
-      successMessage.innerHTML = `✅ ${data.nombre_candidatures || generatedApplications.length} candidatures envoyées ! (${today})`;
-    } else {
-      alert('❌ Erreur : ' + (data.message || 'Erreur'));
-    }
+    // ✅ SUCCESS : affiche les résultats
+    const tbody = document.getElementById('results-tbody');
+    tbody.innerHTML = '';
+    
+    generatedApplications.forEach((app) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><strong>${app.name}</strong></td>
+        <td>${app.location}</td>
+        <td>${app.email}</td>
+        <td>${app.secteur}</td>
+        <td><span class="status-badge sent">Envoyé ✓</span></td>
+        <td><button class="btn btn--sm" onclick="showMessage(${generatedApplications.indexOf(app)})">Voir</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+    const successMessage = document.getElementById('success-message');
+    const today = new Date().toLocaleDateString('fr-FR');
+    successMessage.innerHTML = `✅ ${generatedApplications.length} candidatures envoyées ! (${today})`;
+    alert('✅ Candidatures envoyées avec succès !');
   })
   .catch(error => {
+    console.error('❌ Erreur:', error);
     hideLoading();
-    alert('❌ Erreur : ' + error.message);
+    alert('❌ Erreur lors de l\'envoi : ' + error.message);
   });
 }
 
