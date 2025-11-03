@@ -308,7 +308,7 @@ function sendAllApplications() {
   document.getElementById('loading-progress').textContent = 'Envoi des candidatures...';
   
   // ✅ AJOUTE L'URL DU WEBHOOK SCÉNARIO 3 ICI
-  const webhookScenario3 = "https://hook.make.com/XXXXX"; // ← Remplace par ta vraie URL
+  const webhookScenario3 = "82bx1v2hiyni83lkl4exg9rg2ljdnfal@hook.eu2.make.com"; // ← Remplace par ta vraie URL
   
   // Prépare les données pour Make
   const dataToSend = {
