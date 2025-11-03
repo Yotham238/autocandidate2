@@ -307,32 +307,28 @@ function sendAllApplications() {
   showLoading();
   document.getElementById('loading-progress').textContent = 'Envoi des candidatures...';
   
-  // ✅ AJOUTE L'URL DU WEBHOOK SCÉNARIO 3 ICI
-  const webhookScenario3 = "82bx1v2hiyni83lkl4exg9rg2ljdnfal@hook.eu2.make.com"; // ← Remplace par ta vraie URL
+  const webhookScenario3 = "https://hook.eu2.make.com/82bx1v2h1yni83lkl4exg9rg2ljdnfal";
   
-  // Prépare les données pour Make
-  const dataToSend = {
-    email: formData.email,
-    prenom: formData.prenom,
-    ville: formData.ville,
-    telephone: formData.telephone,
-    filiere: formData.filiere,
-    cv_file: uploadedCV,  // Le fichier CV
-    cv_file_name: uploadedCV.name
-  };
+  // ✅ UTILISE FormData au lieu de JSON
+  const formDataToSend = new FormData();
+  formDataToSend.append('email', formData.email);
+  formDataToSend.append('prenom', formData.prenom);
+  formDataToSend.append('ville', formData.ville);
+  formDataToSend.append('telephone', formData.telephone);
+  formDataToSend.append('filiere', formData.filiere);
+  formDataToSend.append('cv_file', uploadedCV);  // ✅ Maintenant ça marche !
+  formDataToSend.append('cv_file_name', uploadedCV.name);
   
   // Envoie via webhook Make
   fetch(webhookScenario3, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dataToSend)
+    body: formDataToSend  // ✅ PAS de headers, FormData gère tout
   })
   .then(response => response.json())
   .then(data => {
     hideLoading();
     
     if (data.success) {
-      // ✅ Si Make a réussi, affiche les résultats
       const tbody = document.getElementById('results-tbody');
       tbody.innerHTML = '';
       
@@ -351,14 +347,14 @@ function sendAllApplications() {
       
       const successMessage = document.getElementById('success-message');
       const today = new Date().toLocaleDateString('fr-FR');
-      successMessage.innerHTML = `✅ ${data.nombre_candidatures || generatedApplications.length} candidatures envoyées avec succès ! (${today})<br><a href="${data.sheet_url}" target="_blank">📊 Voir le suivi Google Sheet</a>`;
+      successMessage.innerHTML = `✅ ${data.nombre_candidatures || generatedApplications.length} candidatures envoyées ! (${today})`;
     } else {
-      alert('❌ Erreur : ' + (data.message || 'Les candidatures n\'ont pas pu être envoyées'));
+      alert('❌ Erreur : ' + (data.message || 'Erreur'));
     }
   })
   .catch(error => {
     hideLoading();
-    alert('❌ Erreur de connexion : ' + error.message);
+    alert('❌ Erreur : ' + error.message);
   });
 }
 
