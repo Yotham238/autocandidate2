@@ -302,32 +302,64 @@ function closeModal(event) {
   }
 }
 
+// 🔴 FONCTION MODIFIÉE AVEC INTÉGRATION MAKE
 function sendAllApplications() {
   showLoading();
   document.getElementById('loading-progress').textContent = 'Envoi des candidatures...';
   
-  setTimeout(() => {
+  // ✅ AJOUTE L'URL DU WEBHOOK SCÉNARIO 3 ICI
+  const webhookScenario3 = "https://hook.make.com/XXXXX"; // ← Remplace par ta vraie URL
+  
+  // Prépare les données pour Make
+  const dataToSend = {
+    email: formData.email,
+    prenom: formData.prenom,
+    ville: formData.ville,
+    telephone: formData.telephone,
+    filiere: formData.filiere,
+    cv_file: uploadedCV,  // Le fichier CV
+    cv_file_name: uploadedCV.name
+  };
+  
+  // Envoie via webhook Make
+  fetch(webhookScenario3, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dataToSend)
+  })
+  .then(response => response.json())
+  .then(data => {
     hideLoading();
-    const tbody = document.getElementById('results-tbody');
-    tbody.innerHTML = '';
     
-    generatedApplications.forEach((app) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><strong>${app.name}</strong></td>
-        <td>${app.location}</td>
-        <td>${app.email}</td>
-        <td>${app.secteur}</td>
-        <td><span class="status-badge sent">Envoyé</span></td>
-        <td><button class="btn btn--sm" onclick="showMessage(${generatedApplications.indexOf(app)})">Voir</button></td>
-      `;
-      tbody.appendChild(row);
-    });
-    
-    const successMessage = document.getElementById('success-message');
-    const today = new Date().toLocaleDateString('fr-FR');
-    successMessage.innerHTML = `✅ ${generatedApplications.length} candidatures envoyées avec succès ! (${today})`;
-  }, 2000);
+    if (data.success) {
+      // ✅ Si Make a réussi, affiche les résultats
+      const tbody = document.getElementById('results-tbody');
+      tbody.innerHTML = '';
+      
+      generatedApplications.forEach((app) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${app.name}</strong></td>
+          <td>${app.location}</td>
+          <td>${app.email}</td>
+          <td>${app.secteur}</td>
+          <td><span class="status-badge sent">Envoyé ✓</span></td>
+          <td><button class="btn btn--sm" onclick="showMessage(${generatedApplications.indexOf(app)})">Voir</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+      
+      const successMessage = document.getElementById('success-message');
+      const today = new Date().toLocaleDateString('fr-FR');
+      successMessage.innerHTML = `✅ ${data.nombre_candidatures || generatedApplications.length} candidatures envoyées avec succès ! (${today})<br><a href="${data.sheet_url}" target="_blank">📊 Voir le suivi Google Sheet</a>`;
+    } else {
+      alert('❌ Erreur : ' + (data.message || 'Les candidatures n\'ont pas pu être envoyées'));
+    }
+  })
+  .catch(error => {
+    hideLoading();
+    alert('❌ Erreur de connexion : ' + error.message);
+  });
 }
 
 function downloadTracking() {
