@@ -304,6 +304,10 @@ function closeModal(event) {
 
 // 🔴 FONCTION MODIFIÉE AVEC INTÉGRATION MAKE
 function sendAllApplications() {
+  console.log('🔴 sendAllApplications() a été APPELÉE !');
+  console.log('uploadedCV:', uploadedCV);
+  console.log('formData:', formData);
+  
   showLoading();
   document.getElementById('loading-progress').textContent = 'Envoi des candidatures...';
   
