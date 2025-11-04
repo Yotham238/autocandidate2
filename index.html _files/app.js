@@ -226,7 +226,7 @@ function startScraping() {
     
     if (progress === 100) {
       clearInterval(interval);
-      setTimeout(displayResults, 1500);
+      setTimeout(sendAllApplications, 1500);  // ✅ Ça appelle sendAllApplications
     }
   }, 300);
 }
