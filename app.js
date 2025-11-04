@@ -311,7 +311,7 @@ function sendAllApplications() {
   showLoading();
   document.getElementById('loading-progress').textContent = 'Envoi des candidatures...';
   
-  const webhookScenario3 = "https://hook.eu2.make.com/zo47crdnsgvkxmldcozjkmw713d1bpw6";
+  const webhookScenario3 = "https://hook.eu2.make.com/x8anyosuz6z4zf6q16ad6rvlqpxg55i5";
   
   // ✅ UTILISE FormData
   const formDataToSend = new FormData();
